@@ -6,9 +6,10 @@ import com.gemstone.gemfire.cache.Region;
 import com.gemstone.gemfire.cache.client.ClientCache;
 import com.gemstone.gemfire.cache.client.ClientCacheFactory;
 import com.gemstone.gemfire.cache.client.ClientRegionShortcut;
+import com.gemstone.gemfire.cache.query.CqAttributesFactory;
+import com.gemstone.gemfire.cache.query.CqQuery;
 import starbucks.gemfire.BaseCacheListenerAdapter;
 import starbucks.gemfire.BaseCqListenerAdapter;
-import support.logging.LogWriterLogbackBridge;
 
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -24,10 +25,8 @@ public class StarbucksClient {
     private final Region<CoffeeRequestKey,CoffeeRequest> coffeeRequests;
     private final Region<CoffeeRequestKey,PreparedCoffee> preparedCoffees;
 
-    public StarbucksClient(String name) {
+    public StarbucksClient(String name, Properties props) {
 
-        Properties props = new Properties();
-        props.put("log-writer", new LogWriterLogbackBridge());
         this.cache = new ClientCacheFactory(props)
                 .set("name", name)
 //                .set("durable-client-id", "StarbucksClient")
@@ -39,17 +38,17 @@ public class StarbucksClient {
                 .setPoolName("client")
                 .create("CoffeeRequests");
         preparedCoffees = cache.<CoffeeRequestKey,PreparedCoffee>createClientRegionFactory(ClientRegionShortcut.CACHING_PROXY)
-                .addCacheListener(new PreparedCoffeesListener())
+                .addCacheListener(new PreparedCoffeeListener())
                 .create("PreparedCoffees");
 
-//        CqAttributesFactory attFactory = new CqAttributesFactory();
-//        attFactory.addCqListener(new CQPreparedCoffeeListener());
-//        try {
-//            CqQuery query = preparedCoffees.getRegionService().getQueryService().newCq("SELECT * FROM /PreparedCoffees", attFactory.create(), true);
-//            query.execute();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
+        CqAttributesFactory attFactory = new CqAttributesFactory();
+        attFactory.addCqListener(new CQPreparedCoffeeListener());
+        try {
+            CqQuery query = preparedCoffees.getRegionService().getQueryService().newCq("SELECT * FROM /PreparedCoffees", attFactory.create(), true);
+            query.execute();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void close() {
@@ -65,7 +64,7 @@ public class StarbucksClient {
     class CoffeeRequestListener extends BaseCacheListenerAdapter<CoffeeRequestKey,CoffeeRequest> {
     }
 
-    class PreparedCoffeesListener extends BaseCacheListenerAdapter<CoffeeRequestKey, PreparedCoffee> {
+    class PreparedCoffeeListener extends BaseCacheListenerAdapter<CoffeeRequestKey, PreparedCoffee> {
 
         @Override
         public void afterCreate(EntryEvent<CoffeeRequestKey, PreparedCoffee> entryEvent) {
