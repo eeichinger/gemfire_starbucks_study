@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE client-cache PUBLIC
+    "-//GemStone Systems, Inc.//GemFire Declarative Caching 6.6//EN"
+    "http://www.gemstone.com/dtd/cache6_6.dtd">
+
+<!--
+  | clientCache.xml
+  |
+  | Initializes a region with sample Customer data for querying. 
+-->
+<client-cache>
+        <pool name="client" subscription-enabled="true">
+        	<locator host="localhost" port="40404"/>
+    	</pool>
+
+<!--
+    	<region name="CoffeeRequests" refid="CACHING_PROXY" />
+    	<region name="PreparedCoffees" refid="CACHING_PROXY" />
+-->
+
+</client-cache>

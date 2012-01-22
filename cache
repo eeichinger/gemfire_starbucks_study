@@ -1,0 +1,63 @@
+#!/bin/bash
+
+SCRIPTDIR=`dirname $0`
+pushd $SCRIPTDIR > /dev/null
+SCRIPTDIR=`pwd`
+popd > /dev/null
+
+op=$1
+NAME=$2
+LOCATOR=$3
+
+if [ "x$NAME" = "x" ]; then
+	NAME="server1"
+fi
+
+if [ "x$LOCATOR" = "x" ]; then
+	LOCATOR=localhost[40404]
+fi
+
+INSTANCEDIR=$SCRIPTDIR/target/$NAME
+CACHEXML=$SCRIPTDIR/xml/serverCache.xml
+
+case $op in
+	"start")
+		echo "Starting cache $INSTANCEDIR with $CACHEXML"
+
+		if [ -f "$INSTANCEDIR/.cacheserver.ser" ]; then
+			echo "Cache instance $INSTANCEDIR is already running"
+			exit 1
+		fi
+		
+		rm -rf $INSTANCEDIR
+
+		if [ ! -d "$INSTANCEDIR" ]; then
+			echo "Creating $INSTANCEDIR"
+			mkdir -p $INSTANCEDIR
+		fi
+
+		CLASSPATH=$SCRIPTDIR/application/target/classes
+
+		cacheserver start -dir=$INSTANCEDIR cache-xml-file=$SCRIPTDIR/xml/serverCache.xml locators=$LOCATOR mcast-port=0 -server-port=0 -J-Dgemfire.log-level=info -J-Dgemfire.statistic-sampling-enabled=true -J-Dgemfire.statistic-sample-rate=100 -J-Dgemfire.statistic-archive-file=$INSTANCEDIR/stats.gfs -J-Dfile.encoding=utf-8 -J-Dgemfire.pureJavaMode1=true -J-Dgemfire.OSProcess.DISABLE_OUTPUT_REDIRECTION=false -J-Djava.util.logging.config.class=support.logging.JulOverGemfireInstaller
+		
+		exit 0
+		;;
+	"stop")
+		echo "Stopping cache $INSTANCEDIR"
+
+		if [ ! -d "$INSTANCEDIR" ]; then
+			echo "Cache instance $INSTANCEDIR is already stopped"
+			exit 1
+		fi
+
+		cacheserver stop -dir=$INSTANCEDIR
+		rm -rf $INSTANCEDIR
+		exit 0
+		;;		
+	-*)
+		echo "$program: $arg: unknown option"
+		exit 1
+		;;
+	*)
+	args="$args $arg"
+esac

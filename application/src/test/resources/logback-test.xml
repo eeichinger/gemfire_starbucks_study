@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %5p | %-10t | %logger{55} | %m %n</pattern>
+        </encoder>
+    </appender>
+
+<!--
+    <logger name="org.springframework.integration.endpoint.SourcePollingChannelAdapter" level="INFO" />
+    <logger name="org.springframework.amqp.rabbit.listener.BlockingQueueConsumer" level="INFO" />
+-->
+
+    <root>
+        <level value="DEBUG" />
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+</configuration>

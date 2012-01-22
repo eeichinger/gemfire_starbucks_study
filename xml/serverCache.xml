@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE cache PUBLIC
+        "-//GemStone Systems, Inc.//GemFire Declarative Caching 6.6//EN"
+        "http://www.gemstone.com/dtd/cache6_6.dtd">
+
+<!--
+  | cache.xml
+  |
+  | Initializes a region with sample Customer data for querying. 
+-->
+<cache>
+    <region name="CoffeeRequests">
+        <region-attributes statistics-enabled="true" data-policy="partition">
+            <partition-attributes redundant-copies="1"/>
+            <cache-listener>
+                <class-name>starbucks.gemfire.BaristaListener</class-name>
+                <parameter name="numberOfBaristas">
+                    <string>2</string>
+                </parameter>
+            </cache-listener>
+        </region-attributes>
+    </region>
+
+    <region name="PreparedCoffees">
+        <region-attributes statistics-enabled="true" data-policy="partition">
+            <partition-attributes redundant-copies="1"/>
+        </region-attributes>
+    </region>
+
+</cache>
