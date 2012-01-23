@@ -10,8 +10,13 @@ import static support.Assert.notNull;
  */
 public class PreparedCoffee implements Serializable {
 
+    private final String baristaId;
     private final CoffeeRequestKey requestKey;
     private final long preparationDurationMillis;
+
+    public String getBaristaId() {
+        return baristaId;
+    }
 
     public CoffeeRequestKey getRequestKey() {
         return requestKey;
@@ -21,10 +26,12 @@ public class PreparedCoffee implements Serializable {
         return preparationDurationMillis;
     }
 
-    public PreparedCoffee(CoffeeRequestKey requestKey, long preparationDurationMillis) {
-        this.preparationDurationMillis = preparationDurationMillis;
+    public PreparedCoffee(String baristaId, CoffeeRequestKey requestKey, long preparationDurationMillis) {
+        notNull(baristaId, "baristaId");
         notNull(requestKey, "requestKey");
 
+        this.baristaId = baristaId;
+        this.preparationDurationMillis = preparationDurationMillis;
         this.requestKey = requestKey;
     }
 }

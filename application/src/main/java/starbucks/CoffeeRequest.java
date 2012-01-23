@@ -1,6 +1,10 @@
 package starbucks;
 
+import support.StringUtils;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import static support.Assert.notNull;
 
@@ -13,6 +17,7 @@ public class CoffeeRequest implements Serializable {
     private final CoffeeRequestKey requestKey;
     private final CoffeeType coffeeType;
     private final long timestampMillis;
+    private final List<String> handledByBaristaList = new ArrayList<String>();
 
     public CoffeeRequestKey getRequestKey() {
         return requestKey;
@@ -26,12 +31,21 @@ public class CoffeeRequest implements Serializable {
         return timestampMillis;
     }
 
+    public String[] getBaristas() {
+        return handledByBaristaList.toArray(new String[0]);
+    }
+    
+    public void markHandledBy(String baristaId) {
+        handledByBaristaList.add(baristaId);
+    }
+
     @Override
     public String toString() {
         return "CoffeeRequest{" +
                 requestKey +
                 ", coffeeType=" + coffeeType +
                 ", timestampMillis=" + timestampMillis +
+                ", baristas=" + StringUtils.join(handledByBaristaList,",") +
                 "}";
     }
 

@@ -27,4 +27,12 @@
         </region-attributes>
     </region>
 
+    <function-service>
+        <function>
+            <class-name>starbucks.gemfire.BaristaStatisticsFunction</class-name>
+            <parameter name="id">
+                <string>baristaStats</string>
+            </parameter>
+        </function>
+    </function-service>
 </cache>

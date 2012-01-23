@@ -1,16 +1,10 @@
 package starbucks.gemfire;
 
-import com.gemstone.gemfire.cache.Declarable;
 import com.gemstone.gemfire.cache.EntryEvent;
 import com.gemstone.gemfire.cache.Region;
-import com.gemstone.gemfire.cache.util.CacheListenerAdapter;
-import starbucks.Barista;
-import starbucks.CoffeeRequest;
-import starbucks.CoffeeRequestKey;
-import starbucks.PreparedCoffee;
+import starbucks.*;
 
 import java.util.Properties;
-import java.util.logging.Logger;
 
 /**
  * @author: Erich Eichinger
@@ -19,6 +13,10 @@ import java.util.logging.Logger;
 public class BaristaListener extends BaseCacheListenerAdapter<CoffeeRequestKey, CoffeeRequest> {
 
     private Barista baristas;
+
+    public BaristaStatistics getStatistics() {
+        return baristas.getStatistics();
+    }
 
     public BaristaListener() {
         int numberOfBaristas = 1;
@@ -35,8 +33,8 @@ public class BaristaListener extends BaseCacheListenerAdapter<CoffeeRequestKey, 
     }
 
     @Override
-    public void afterCreate(EntryEvent<CoffeeRequestKey, CoffeeRequest> entryEvent) {
-        CoffeeRequest coffeeRequest = entryEvent.getNewValue();
+    public void afterCreate(final EntryEvent<CoffeeRequestKey, CoffeeRequest> entryEvent) {
+        final CoffeeRequest coffeeRequest = entryEvent.getNewValue();
         logger.info(String.format("afterCreate [%s]:%s on %s", this, coffeeRequest, entryEvent.getDistributedMember().getProcessId()));
 
         final Region<CoffeeRequestKey, PreparedCoffee> preparedCoffeeRegion = entryEvent
@@ -45,18 +43,18 @@ public class BaristaListener extends BaseCacheListenerAdapter<CoffeeRequestKey, 
                 .getRegion("PreparedCoffees");
         final Region<CoffeeRequestKey, CoffeeRequest> requestRegion = entryEvent.getRegion();
 
-        baristas.prepareCoffee(coffeeRequest, new Barista.CoffeeReadyCallback() {
+        baristas.scheduleMakingCoffee(coffeeRequest, new Barista.CoffeeProgressCallback() {
+            @Override
+            public void notifyMakingCoffee(CoffeeRequest request) {
+                requestRegion.put(request.getRequestKey(), request);
+                logger.info(String.format("Barista starting making coffee [%s]:%s on %s", this, coffeeRequest, entryEvent.getDistributedMember().getProcessId()));
+            }
+
             @Override
             public void notifyCoffeeReady(PreparedCoffee coffee) {
                 preparedCoffeeRegion.put(coffee.getRequestKey(), coffee);
-                requestRegion.remove(coffee.getRequestKey());
+                logger.info(String.format("Barista finished making coffee [%s]:%s on %s", this, coffeeRequest, entryEvent.getDistributedMember().getProcessId()));
             }
         });
-    }
-
-    @Override
-    public void afterDestroy(EntryEvent<CoffeeRequestKey, CoffeeRequest> entryEvent) {
-        CoffeeRequest coffeeRequest = entryEvent.getNewValue();
-        logger.info(String.format("afterDestroy [%s]:%s on %s", this, coffeeRequest, entryEvent.getDistributedMember().getProcessId()));
     }
 }

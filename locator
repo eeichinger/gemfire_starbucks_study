@@ -8,7 +8,7 @@ popd > /dev/null
 op=$1
 port=$2
 
-INSTANCEDIR=$scriptdir/target/gemfire/locator
+INSTANCEDIR=$scriptdir/target/locator
 
 if [ "x$port" == "x" ]; then
 	echo "Locator port not specified, using default 40404"

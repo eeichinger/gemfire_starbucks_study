@@ -6,6 +6,6 @@ package starbucks;
  */
 public class Customer {
 
-    public void orderCoffee(StarbucksClient starbucksClient) {
+    public void orderCoffee(Starbucks starbucks) {
     }
 }

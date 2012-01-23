@@ -15,6 +15,7 @@
     <logger name="org.springframework.integration.endpoint.SourcePollingChannelAdapter" level="INFO" />
     <logger name="org.springframework.amqp.rabbit.listener.BlockingQueueConsumer" level="INFO" />
 -->
+    <logger name="gemfire" level="INFO" />
 
     <root>
         <level value="DEBUG" />

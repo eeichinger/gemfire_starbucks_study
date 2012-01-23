@@ -6,3 +6,4 @@ target
 *.ignore
 *.tmp
 .DS_Store
+vf.gf.*
