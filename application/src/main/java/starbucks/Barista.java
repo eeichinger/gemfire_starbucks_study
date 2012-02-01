@@ -46,7 +46,7 @@ public class Barista {
         coffeeRequest.markHandledBy(baristaId);
         notifyTarget.notifyMakingCoffee(coffeeRequest);
 
-        long prepTimeMillis = Math.round(Math.random()*5000);
+        long prepTimeMillis = Math.round(Math.random()*2000)+1000;
         pause(prepTimeMillis);
         notifyTarget.notifyCoffeeReady(new PreparedCoffee(""+Thread.currentThread().getId(), coffeeRequest.getRequestKey(), prepTimeMillis));
     }

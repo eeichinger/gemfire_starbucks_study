@@ -9,6 +9,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import static support.Assert.notNull;
+import static support.TimerHelpers.pause;
 
 /**
  * @author: Erich Eichinger
@@ -16,7 +17,7 @@ import static support.Assert.notNull;
  */
 public class StarbucksApp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // redirect JUL to SLF4J
         LogManager.getLogManager().reset();
         Logger.getLogger("").addHandler(new SLF4JBridgeHandler());
@@ -25,10 +26,23 @@ public class StarbucksApp {
         Properties props = new Properties();
         props.put("log-writer", new LogWriterLogbackBridge());
 
-        StarbucksApp app = new StarbucksApp(props);
+        final StarbucksApp app = new StarbucksApp(props);
         try {
-            app.simulateCustomer();
-            app.getBaristaStats();
+            Thread simulationThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    app.simulateCustomers();
+                }
+            }, "Customer Simulation Thread");
+            simulationThread.setDaemon(true);
+            simulationThread.start();
+
+            System.out.println("Started Customer Simulation - press enter to exit");
+            System.in.read();
+
+            app.printBaristaStats();
+        } catch(Exception e) {
+            e.printStackTrace();
         } finally {
             app.close();
         }
@@ -46,7 +60,7 @@ public class StarbucksApp {
         starbucksClient.close();
     }
 
-    public void simulateCustomer() {
+    public void simulateCustomers() {
         logger.info("Simulating Customers");
 
         for(int i=0;i<100;i++) {
@@ -57,12 +71,11 @@ public class StarbucksApp {
                     logger.info("got my coffee");
                 }
             });
-//            pause(500);
+            pause(Math.round(Math.random() * 500.0)+250);
         }
-
     }
 
-    public void getBaristaStats() {
+    public void printBaristaStats() {
         BaristaStatistics stats = starbucksClient.getBaristaStatistics();
         logger.info("Got stats " + stats);
     }

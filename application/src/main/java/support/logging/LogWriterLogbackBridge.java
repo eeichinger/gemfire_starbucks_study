@@ -23,12 +23,14 @@ public class LogWriterLogbackBridge extends LogWriterImpl {
     protected void put(int i, String s, Throwable throwable) {
         int level = convertLevel(i);
         logger.log(null, "gemfireLogger", level, s, null, throwable);
+        System.out.println("FROM CACHE:" + s);
     }
 
     @Override
     protected void put(int i, StringId stringId, Object[] objects, Throwable throwable) {
         int level = convertLevel(i);
         logger.log(null, "gemfireLogger", level, stringId.toLocalizedString(objects), null, throwable);
+        System.out.println("FROM CACHE:" + stringId.toLocalizedString(objects));
     }
 
     private int convertLevel(int i) {
