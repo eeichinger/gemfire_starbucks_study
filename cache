@@ -36,10 +36,9 @@ case $op in
 			mkdir -p $INSTANCEDIR
 		fi
 
-		CLASSPATH=$SCRIPTDIR/application/target/classes
-
-		cacheserver start -dir=$INSTANCEDIR cache-xml-file=$SCRIPTDIR/xml/serverCache.xml locators=$LOCATOR mcast-port=0 -server-port=0 -J-Dgemfire.log-level=info -J-Dgemfire.statistic-sampling-enabled=true -J-Dgemfire.statistic-sample-rate=100 -J-Dgemfire.statistic-archive-file=$INSTANCEDIR/stats.gfs -J-Dfile.encoding=utf-8 -J-Dgemfire.pureJavaMode1=true -J-Dgemfire.OSProcess.DISABLE_OUTPUT_REDIRECTION=false -J-Djava.util.logging.config.class=support.logging.JulOverGemfireInstaller
-		
+		CLASSPATH=$SCRIPTDIR/application/target/*
+		cacheserver start -dir=$INSTANCEDIR cache-xml-file=$SCRIPTDIR/xml/serverCache.xml locators=$LOCATOR mcast-port=0 -server-port=0 -J-Dgemfire.log-level=info -J-Dgemfire.statistic-sampling-enabled=true -J-Dgemfire.statistic-sample-rate=100 -J-Dgemfire.statistic-archive-file=$INSTANCEDIR/stats.gfs -J-Dfile.encoding=utf-8 -J-Dgemfire.pureJavaMode1=true -J-Dgemfire.OSProcess.DISABLE_OUTPUT_REDIRECTION=true -J-Djava.util.logging.config.class=support.logging.JulOverGemfireInstaller
+		#java.exe -server -classpath "$CLASSPATH" -Dgemfire.pureJavaModel=true -Dgemfire.log-level=config -Dgemfire.statistic-sampling-enabled=true -Dgemfire.statistic-sample-rate=100 -Dgemfire.statistic-archive-file=$INSTANCEDIR/stats.gfs -Dfile.encoding=utf-8 -Djava.util.logging.config.class=support.logging.JulOverGemfireInstaller starbucks.gemfire.StarbucksServerLauncher server -server-port=0 locators=localhost[40404] mcast-port=0 cache-xml-file=$SCRIPTDIR/xml/serverCache.xml -dir=$INSTANCEDIR
 		exit 0
 		;;
 	"stop")
@@ -51,6 +50,9 @@ case $op in
 		fi
 
 		cacheserver stop -dir=$INSTANCEDIR
+#		CLASSPATH=$SCRIPTDIR/application/target/*
+#		java.exe -server -classpath "$CLASSPATH" -Dgemfire.pureJavaModel=true -Dgemfire.log-level=config -Dgemfire.statistic-sampling-enabled=true -Dgemfire.statistic-sample-rate=100 -Dgemfire.statistic-archive-file=$INSTANCEDIR/stats.gfs -Dfile.encoding=utf-8 -Djava.util.logging.config.class=support.logging.JulOverGemfireInstaller starbucks.gemfire.StarbucksServerLauncher stop -dir=$INSTANCEDIR
+
 		rm -rf $INSTANCEDIR
 		exit 0
 		;;		

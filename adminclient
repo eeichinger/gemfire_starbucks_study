@@ -1,0 +1,10 @@
+#!/bin/bash
+
+scriptdir=`dirname $0`
+pushd $scriptdir > /dev/null
+scriptdir=`pwd`
+popd > /dev/null
+
+mvn package
+
+java -classpath "./application/target/*" starbucks.client.AdminApp

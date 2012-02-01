@@ -5,14 +5,10 @@ pushd $scriptdir > /dev/null
 scriptdir=`pwd`
 popd > /dev/null
 
-#$scriptdir/cache stop server2
-#$scriptdir/cache stop server1
-#$scriptdir/locator stop
-
 mvn package
 
 $scriptdir/locator start
 $scriptdir/cache start server1 &
-#$scriptdir/cache start server2
+$scriptdir/cache start server2
 
 #starbucksclient
