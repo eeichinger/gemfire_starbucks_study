@@ -8,5 +8,3 @@ popd > /dev/null
 mvn package
 
 java -classpath "./application/target/*" starbucks.client.StarbucksApp
-#java -classpath "./application/target/*" starbucks.client.AdminApp
-

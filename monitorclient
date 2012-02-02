@@ -7,8 +7,4 @@ popd > /dev/null
 
 mvn package
 
-$scriptdir/locator start
-$scriptdir/cache start server1 &
-$scriptdir/cache start server2
-
-#starbucksclient
+java -classpath "./application/target/*" starbucks.client.MonitorApp

@@ -12,10 +12,12 @@ import static support.Assert.notNull;
 import static support.TimerHelpers.pause;
 
 /**
+ * Simulates customers placing coffee orders. After pressing a key to exit the client, 
+ *
  * @author: Erich Eichinger
  * @date: 23/01/12
  */
-public class StarbucksApp {
+public class MonitorApp {
 
     public static void main(String[] args) throws Exception {
         // redirect JUL to SLF4J
@@ -26,19 +28,20 @@ public class StarbucksApp {
         Properties props = new Properties();
         props.put("log-writer", new LogWriterLogbackBridge());
 
-        final StarbucksApp app = new StarbucksApp(props);
+        final MonitorApp app = new MonitorApp(props);
         try {
             Thread simulationThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    app.simulateCustomers();
+                    app.monitor();
                 }
-            }, "Customer Simulation Thread");
+            }, "Monitoring Thread");
             simulationThread.setDaemon(true);
             simulationThread.start();
 
-            System.out.println("Started Customer Simulation - press enter to exit");
+            System.out.println("Started Monitoring - press enter to exit");
             System.in.read();
+
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -49,30 +52,23 @@ public class StarbucksApp {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final Starbucks starbucksClient;
     private boolean isClosed = false;
-    
-    public StarbucksApp(Properties props) {
+
+    public MonitorApp(Properties props) {
         notNull(props, "props");
-        starbucksClient = new Starbucks("starbuckstestclient", props);
+        starbucksClient = new Starbucks("monitoringclient", props);
     }
 
     public void close() {
         isClosed = true;
-        pause(750);
+        pause(2000);
         starbucksClient.close();
     }
 
-    public void simulateCustomers() {
-        logger.info("Simulating Customers");
-
+    public void monitor() {
         while(!isClosed) {
-            CoffeeRequest request = CoffeeRequest.newCoffeeRequest(CoffeeType.AMERICANO);
-            starbucksClient.submitOrder(request, new Starbucks.CoffeeReadyCallback() {
-                @Override
-                public void onCoffeeReady(CoffeeRequest request, PreparedCoffee coffee) {
-                    logger.info("got my coffee");
-                }
-            });
-            pause(Math.round(Math.random() * 500.0)+250);
+            BaristaStatistics stats = starbucksClient.getBaristaStatistics();
+            logger.info("Got monitor stats " + stats);
+            pause(2000);
         }
     }
 }
