@@ -36,7 +36,7 @@ Hitting "Enter" ends the applications
 
 ## Features
 
-### Uses partitioned regions
+* Uses partitioned regions
 
     <region name="PreparedCoffees">
         <region-attributes statistics-enabled="true" data-policy="partition">
@@ -45,25 +45,26 @@ Hitting "Enter" ends the applications
     </region>
 
 	
-### The starbucks client that 
-	- puts CoffeeRequests
-	- continuously queries for PreparedCoffees
+* The starbucks client that
+- puts CoffeeRequests
+- continuously queries for PreparedCoffees
 	
-### CacheListener that listens for CoffeeRequest create events
+* CacheListener that listens for CoffeeRequest create events
 
-### Captures statistics in ./target/server<nr>/stats.gfsh
+* Captures statistics in ./target/server<nr>/stats.gfsh
 
-### Uses a function to poll for barista work queue metrics
+* Uses a function to poll for barista work queue metrics
 
-### Uses a custom BaristaStatisticsCollector to aggregate barista metrics from all servers
+* Uses a custom BaristaStatisticsCollector to aggregate barista metrics from all servers
 
-### Uses a continuous query to listen for PreparedCoffee entries that indicate that the coffee is ready
+* Uses a continuous query to listen for PreparedCoffee entries that indicate that the coffee is ready
 
-### Shows how to listen to administrative events like create/destroy regions etc.
+* Shows how to listen to administrative events like create/destroy regions etc.
  
 
 ## Display partition/bucket info and data of PreparedRequests using gfsh
 
+<pre>
 $ gfsh -l localhost:40404
 
 gfsh:/>ls
@@ -88,6 +89,4 @@ localhost(7256)<v1>:44286/51670                       175
 localhost(7956)<v1>:23170/51671                       139
 
                                         Total:         471
-
-
-
+</pre>
