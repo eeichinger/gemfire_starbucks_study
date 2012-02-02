@@ -5,6 +5,7 @@ pushd $scriptdir > /dev/null
 scriptdir=`pwd`
 popd > /dev/null
 
+$scriptdir/cache stop server3
 $scriptdir/cache stop server2
 $scriptdir/cache stop server1
 $scriptdir/locator stop
