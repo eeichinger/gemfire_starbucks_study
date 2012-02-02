@@ -46,8 +46,8 @@ Hitting "Enter" ends the applications
 
 	
 * The starbucks client that
-- puts CoffeeRequests
-- continuously queries for PreparedCoffees
+  - puts CoffeeRequests
+  - continuously queries for PreparedCoffees
 	
 * CacheListener that listens for CoffeeRequest create events
 
